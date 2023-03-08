@@ -2,6 +2,8 @@ FROM php:8.2-fpm
 
 ENV TZ=America/Sao_Paulo
 ENV DEBIAN_FRONTEND noninteractive
+ENV LD_LIBRARY_PATH /usr/local/instantclient
+ENV ORACLE_HOME /usr/local/instantclient
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -57,15 +59,16 @@ RUN pecl install \
 
 COPY php.ini /usr/local/etc/php/
 
-## ODBC Oracle
+## ODBC Oracle Instantclient
 COPY ./instantclient_19_3.zip /tmp/instantclient.zip
 
 RUN unzip /tmp/instantclient.zip -d /usr/local/ && \
     ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus && \
-    rm /tmp/instantclient.zip
+    rm /tmp/instantclient.zip -d
 
+# OCI
 RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr/local/instantclient && \
-    echo 'instantclient,/usr/local/instantclient' | pecl install oci8-3.2.1 && \
+    echo 'instantclient,/usr/local/instantclient' | pecl install oci8-3.0.1 && \
     docker-php-ext-install pdo_oci && \
     docker-php-ext-enable oci8 && \
     pecl clear-cache

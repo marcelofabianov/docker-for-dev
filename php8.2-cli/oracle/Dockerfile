@@ -2,6 +2,8 @@ FROM php:8.2-cli
 
 ENV TZ=America/Sao_Paulo
 ENV DEBIAN_FRONTEND noninteractive
+ENV LD_LIBRARY_PATH /usr/local/instantclient
+ENV ORACLE_HOME /usr/local/instantclient
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -57,34 +59,33 @@ RUN pecl install \
 
 COPY php.ini /usr/local/etc/php/
 
-## ODBC Oracle
+## ODBC Oracle Instantclient
 COPY ./instantclient_19_3.zip /tmp/instantclient.zip
 
 RUN unzip /tmp/instantclient.zip -d /usr/local/ && \
     ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus && \
-    rm /tmp/instantclient.zip
+    rm /tmp/instantclient.zip -d
 
+# OCI
 RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr/local/instantclient && \
-    echo 'instantclient,/usr/local/instantclient' | pecl install oci8-3.2.1 && \
+    echo 'instantclient,/usr/local/instantclient' | pecl install oci8-3.0.1 && \
     docker-php-ext-install pdo_oci && \
     docker-php-ext-enable oci8 && \
     pecl clear-cache
 
+RUN rm -rf /var/lib/apt/lists/*
+
 RUN curl -L -C - --progress-bar -o /usr/local/bin/composer https://getcomposer.org/composer.phar && \
-    chmod 755 /usr/local/bin/composer && \
-    useradd -m devs && \
-    usermod -u 1000 devs
+    chmod 755 /usr/local/bin/composer
 
 RUN composer self-update
 
-RUN rm -rf /var/lib/apt/lists/*
+RUN useradd -m app && usermod -u 1000 app
 
-COPY --chown=devs:www-data . /var/www
+COPY --chown=app:www-data . /var/www
 
 RUN chown -R www-data /var/www
 
-USER devs
+USER app
 
 EXPOSE 9000
-
-CMD ["php-fpm"]
