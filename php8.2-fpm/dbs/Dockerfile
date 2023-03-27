@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.2-fpm
 
 ENV TZ=America/Sao_Paulo
 ENV DEBIAN_FRONTEND noninteractive
@@ -43,8 +43,8 @@ RUN docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql && \
         simplexml \
         pgsql \
         pdo_pgsql \
-        mysqli \
-        pdo_mysql
+        pdo_mysql \
+        mysqli
 
 RUN pecl install \
         redis \
@@ -75,19 +75,21 @@ RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr/local/ins
     docker-php-ext-enable oci8 && \
     pecl clear-cache
 
-RUN rm -rf /var/lib/apt/lists/*
-
 RUN curl -L -C - --progress-bar -o /usr/local/bin/composer https://getcomposer.org/composer.phar && \
-    chmod 755 /usr/local/bin/composer
+    chmod 755 /usr/local/bin/composer && \
+    useradd -m devs && \
+    usermod -u 1000 devs
 
 RUN composer self-update
 
-RUN useradd -m app && usermod -u 1000 app
+RUN rm -rf /var/lib/apt/lists/*
 
-COPY --chown=app:www-data . /var/www
+COPY --chown=devs:www-data . /var/www
 
 RUN chown -R www-data /var/www
 
-USER app
+USER devs
 
 EXPOSE 9000
+
+CMD ["php-fpm"]
