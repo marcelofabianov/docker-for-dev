@@ -60,7 +60,7 @@ RUN pecl install \
 COPY php.ini /usr/local/etc/php/
 
 ## ODBC Oracle Instantclient
-COPY ./instantclient_19_3.zip /tmp/instantclient.zip
+COPY ../../oracle_instantclient/instantclient_19_3.zip /tmp/instantclient.zip
 
 RUN unzip /tmp/instantclient.zip -d /usr/local/ && \
     ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus && \
