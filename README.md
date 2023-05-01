@@ -32,4 +32,8 @@ Algumas extensões:
 
 ## NodeJS
 
-Tenho um exemplo de Dockerfile e docker-compose.yml para trabalhar com docker em ambiente de desenvolvimento junto com terminal ZSH com OhMyZSH. Este Dockerfile é baseado no node:tls e sempre busca o npm na ultima versão.
+Tenho um exemplo de Dockerfile e docker-compose.yml para trabalhar com node em ambiente de desenvolvimento dockeer junto com terminal ZSH com OhMyZSH e. Este Dockerfile é baseado no node:tls e sempre busca o npm na ultima versão.
+
+## GoLang
+
+Tenho um exemplo de Dockerfile e docker-compose.yml para trabalhar com GoLang em ambiente de desenvolvimento docker junto com terminal ZSH com OhMyZSH e. Este Dockerfile é baseado no golang:alpine e sempre busca o go na ultima versão.
