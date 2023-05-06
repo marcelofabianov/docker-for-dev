@@ -28,4 +28,6 @@ RUN curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/t
   git clone https://github.com/zsh-users/zsh-autosuggestions.git /home/node/.oh-my-zsh/plugins/zsh-autosuggestions && \
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git /home/node/.oh-my-zsh/plugins/zsh-syntax-highlighting
 
+COPY .zshrc /home/node/.zshrc
+
 CMD ["tail", "-f", "/dev/null"]
