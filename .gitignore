@@ -77,26 +77,10 @@ $RECYCLE.BIN/
 # File-based project format
 *.iws
 
-
-# PHPUnit
-/.phpunit.cache
-.phpunit.result.cache
-/coverage.xml
-
-# Public
-/public/build
-/public/hot
-/public/storage
-
 # IDE
 /.fleet
 /.idea
 /.vscode
-
-# Js
-/node_modules
-npm-debug.log
-yarn-error.log
 
 # Env
 .env
@@ -105,7 +89,3 @@ yarn-error.log
 *.sh
 *.pfx
 *.pem
-
-# Docker
-docker-compose.yml
-Dockerfile

@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+
+  http:
+    container_name: http
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./docker/local/http/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/local/http/log:/var/log/nginx
+    ports:
+      - "8000:80"
+    networks:
+      - go_network
+    depends_on:
+      - backend
+
+  backend:
+    container_name: backend
+    restart: always
+    build:
+      context: .
+      dockerfile: ./docker/local/go/Dockerfile
+    image: marcelofabianov/go
+    working_dir: /backend
+    volumes:
+      - .:/backend
+      - ./docker/local/zsh/.zshrc:/home/dev/.zshrc
+      - ./docker/local/zsh/.zsh_history:/home/dev/.zsh_history
+    networks:
+      - go_network
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: db
+    restart: always
+    image: postgres:15.1
+    environment:
+      POSTGRES_USER: '${DB_USERNAME:-user}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+      POSTGRES_DB: '${DB_DATABASE:-customer_db}'
+    volumes:
+      - 'customer_db:/var/lib/postgresql/data'
+    networks:
+      - go_network
+    ports:
+      - '5432:5432'
+
+networks:
+  go_network:
+    driver: bridge
+
+volumes:
+  customer_db:
+    driver: local

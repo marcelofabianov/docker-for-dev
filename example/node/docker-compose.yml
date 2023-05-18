@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  backend:
+    container_name: backend
+    restart: always
+    build: .
+    working_dir: /backend
+    volumes:
+      - .:/backend
+      - ./.zsh/.zshrc:/home/node/.zshrc
+      - ./.zsh/.zsh_history:/home/node/.zsh_history
+    networks:
+      - node_network
+    ports:
+      - '3000:3000'
+      - '5555:5555'
+
+networks:
+  node_network:
+    driver: bridge
